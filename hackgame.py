@@ -1,9 +1,15 @@
-import random
 import os
-from bext import fg
+import random
+
+from colorama import (Fore,
+                      Style,
+                      init)
 
 GARBAGE_CHARS = '~!@#$%^&*()_+-={}[]|;:,.<>?/\\'
 MAX_WORDS = 12
+BLOCK = '█'
+
+init()
 
 with open('sevenletterwords.txt') as dictionaryFile:
     WORDS = dictionaryFile.readlines()
@@ -11,7 +17,6 @@ for i in range(len(WORDS)):
     WORDS[i] = WORDS[i].strip().upper()
 
 WORDS = random.sample(WORDS, len(WORDS))
-
 
 def calculate_common_letters(string1, string2):
     # sum(c1 == c2 for c1, c2 in zip(string1, string2)) ### 1 liner
@@ -74,18 +79,17 @@ def get_terminal(words):
             right_col = overwrite_string(right_col, words[current_word], index)
             current_word += 1
 
-        board.append(hex(memoryAddress) + '  ' + left_col + '    ' +
-                     hex(memoryAddress + LINE_LEN * LINES) + '  ' + right_col)
+        board.append(hex(memoryAddress).upper() + '  ' + left_col + '    ' +
+                     hex(memoryAddress + LINE_LEN * LINES).upper() + '  ' + right_col)
 
         memoryAddress += LINE_LEN
 
     return '\n'.join(board)
 
 
-def get_guess(words, remaining):
+def get_guess(words):
     while True:
-        move = input(
-            f'Enter password: ({remaining} tries remaining): ').upper()
+        move = input('Enter password: ').upper()
         if move in words:
             return move
 
@@ -99,14 +103,18 @@ def runGame():
 
     for remaining in range(4, 0, -1):
         os.system('cls')
-        fg('white')
-        print('Enter the correct word to hack this system:')
-        fg('green')
-        print(game_terminal)
-        fg('white')
+        print(Fore.GREEN)
+        print('Welcome to ROBCO Industies (TM) Termlink:\n')
+        print('Password Required\n')
+        remain_string = ""
+        for i in range(remaining):
+            remain_string += f"{BLOCK} "
+        print(f"Attempts Remaining: {remain_string}\n")
+
+        print(f"{game_terminal}\n")
         print(
-            f'Last Guess - {guess} {calculate_common_letters(guess, secret_password)} / 7 correct')
-        guess = get_guess(game_words, remaining)
+            f'>{guess}\n>Likeness={calculate_common_letters(guess, secret_password)}')
+        guess = get_guess(game_words)
         if guess == secret_password:
             print('A C C E S S   G R A N T E D')
             return

@@ -1,7 +1,7 @@
 # hackgame
 Based on the fallout4 hacking game
 
-**Requires bext**
+**Requires colorama**
 ```
-pip install bext
+pip install colorama
 ```
