@@ -1,8 +1,6 @@
 import random
 import os
-from colorama import init, Fore
-
-init()
+from bext import fg
 
 GARBAGE_CHARS = '~!@#$%^&*()_+-={}[]|;:,.<>?/\\'
 MAX_WORDS = 12
@@ -101,11 +99,11 @@ def runGame():
 
     for remaining in range(4, 0, -1):
         os.system('cls')
-        print(Fore.WHITE)
+        fg('white')
         print('Enter the correct word to hack this system:')
-        print(Fore.GREEN)
+        fg('green')
         print(game_terminal)
-        print(Fore.WHITE)
+        fg('white')
         print(
             f'Last Guess - {guess} {calculate_common_letters(guess, secret_password)} / 7 correct')
         guess = get_guess(game_words, remaining)
