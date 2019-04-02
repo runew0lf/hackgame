@@ -7,6 +7,7 @@ from colorama import (Fore,
 
 GARBAGE_CHARS = '~!@#$%^&*()_+-={}[]|;:,.<>?/\\'
 MAX_WORDS = 12
+MAX_TRIES = 4
 BLOCK = '█'
 
 init()
@@ -54,7 +55,7 @@ def overwrite_string(string, string_to_insert, index):
 
 
 def get_terminal(words):
-    board = []
+    screen = []
     LINES = 16
     LINE_LEN = 16
     WORD_LEN = 7
@@ -79,12 +80,12 @@ def get_terminal(words):
             right_col = overwrite_string(right_col, words[current_word], index)
             current_word += 1
 
-        board.append(hex(memoryAddress).upper() + '  ' + left_col + '    ' +
+        screen.append(hex(memoryAddress).upper() + '  ' + left_col + '    ' +
                      hex(memoryAddress + LINE_LEN * LINES).upper() + '  ' + right_col)
 
         memoryAddress += LINE_LEN
 
-    return '\n'.join(board)
+    return '\n'.join(screen)
 
 
 def get_guess(words):
@@ -93,15 +94,15 @@ def get_guess(words):
         if move in words:
             return move
 
-
-def runGame():
+def hack():
     guess = ""
+    guess_list = []
     game_words = get_words()
     secret_password = game_words[0]
     game_words = random.sample(game_words, len(game_words))  # shuffle again
     game_terminal = get_terminal(game_words)
 
-    for remaining in range(4, 0, -1):
+    for remaining in range(MAX_TRIES, 0, -1):
         os.system('cls')
         print(Fore.GREEN)
         print('Welcome to ROBCO Industies (TM) Termlink:\n')
@@ -110,11 +111,13 @@ def runGame():
         for i in range(remaining):
             remain_string += f"{BLOCK} "
         print(f"Attempts Remaining: {remain_string}\n")
-
         print(f"{game_terminal}\n")
-        print(
-            f'>{guess}\n>Likeness={calculate_common_letters(guess, secret_password)}')
+        if remaining != MAX_TRIES:
+            guess_list.append(f'>{guess}\n>Likeness={calculate_common_letters(guess, secret_password)}')
+            print("\n".join(guess_list))
+
         guess = get_guess(game_words)
+
         if guess == secret_password:
             print('A C C E S S   G R A N T E D')
             return
@@ -124,4 +127,4 @@ def runGame():
 
 
 if __name__ == '__main__':
-    runGame()
+    hack()
